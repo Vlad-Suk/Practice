@@ -9,6 +9,18 @@ app.Use(async (context, next) =>
 });
 
 app.Use(async (context, next) => 
+{
+    if (context.Request.Path == "/short")
+    {
+        await context.Response.WriteAsync("Request short circuited");
+    }
+    else
+    {
+        await next();
+    }
+});
+
+app.Use(async (context, next) => 
 { 
     if (context.Request.Method == HttpMethods.Get
         && context.Request.Query["custom"] == "true")
