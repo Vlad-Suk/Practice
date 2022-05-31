@@ -2,33 +2,15 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 
-app.Use(async (context, next) =>
+((IApplicationBuilder)app).Map("/branch", branch =>
 {
-    await next();
-    await context.Response.WriteAsync($"\n StatusCode - {context.Response.StatusCode}");
-});
+    branch.UseMiddleware<Practice.QueryStringMiddleware>();
 
-app.Use(async (context, next) => 
-{
-    if (context.Request.Path == "/short")
+    branch.Use(async (HttpContext context, Func<Task> next) =>
     {
-        await context.Response.WriteAsync("Request short circuited");
-    }
-    else
-    {
-        await next();
-    }
-});
+        await context.Response.WriteAsync($"Branch Middleware");
+    });
 
-app.Use(async (context, next) => 
-{ 
-    if (context.Request.Method == HttpMethods.Get
-        && context.Request.Query["custom"] == "true")
-    {
-        context.Response.ContentType = "text/plain";
-        await context.Response.WriteAsync("Custom middleware \n");
-    }
-    await next();
 });
 
 app.UseMiddleware<Practice.QueryStringMiddleware>();
