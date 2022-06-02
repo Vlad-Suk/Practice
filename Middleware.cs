@@ -2,8 +2,9 @@
 {
     public class QueryStringMiddleware
     {
-        private RequestDelegate next;
+        private RequestDelegate? next;
 
+        public QueryStringMiddleware() { }
         public QueryStringMiddleware(RequestDelegate nextDelegate)
         {
             next = nextDelegate;
@@ -19,7 +20,10 @@
                 }
                 await context.Response.WriteAsync("Middleware with QueryStringMiddleware \n");
             }
-            await next(context);
+            if (next != null)
+            {
+                await next(context);
+            }
         }
     }
 }

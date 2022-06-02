@@ -4,12 +4,9 @@ var app = builder.Build();
 
 ((IApplicationBuilder)app).Map("/branch", branch =>
 {
-    branch.UseMiddleware<Practice.QueryStringMiddleware>();
+    //branch.UseMiddleware<Practice.QueryStringMiddleware>();
 
-    branch.Run(async (context) =>
-    {
-        await context.Response.WriteAsync($"Branch Middleware");
-    });
+    branch.Run(new Practice.QueryStringMiddleware().Invoke);
 
 });
 
