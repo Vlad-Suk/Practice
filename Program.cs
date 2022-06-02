@@ -1,16 +1,18 @@
+using Microsoft.Extensions.Options;
+using Practice;
+
 var builder = WebApplication.CreateBuilder(args);
+
+//builder.Services.Configure<MessageOptions>(options => { options.CityName = "Kyiv"; });
+
 var app = builder.Build();
 
-
-((IApplicationBuilder)app).Map("/branch", branch =>
+app.MapGet("/location", async (HttpContext context, IOptions<MessageOptions> msgOpts) =>
 {
-    //branch.UseMiddleware<Practice.QueryStringMiddleware>();
-
-    branch.Run(new Practice.QueryStringMiddleware().Invoke);
-
+    Practice.MessageOptions options = msgOpts.Value;
+    await context.Response.WriteAsync($"{options.CountryName}, {options.CityName}, {msgOpts.Value.CountryName}");
 });
 
-app.UseMiddleware<Practice.QueryStringMiddleware>();
 
 app.MapGet("/", () => "Hello World!");
 
