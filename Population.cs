@@ -10,7 +10,7 @@
         }
         public async Task Invoke(HttpContext context)
         {
-            string[] parts = context.Request.Path.ToString().Split('/', StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = context.Request.Path.ToString().Split("/", StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length == 2 && parts[0] == "population")
             {
