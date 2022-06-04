@@ -3,12 +3,14 @@ using Practice;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<MessageOptions>(options => { options.CityName = "Kyiv"; });
-
 var app = builder.Build();
 
-app.UseMiddleware<LocationMiddleware>();
+app.UseMiddleware<Population>();
+app.UseMiddleware<Capital>();
 
-app.MapGet("/", () => "Hello World!");
+app.Run(async (context) =>
+{
+    await context.Response.WriteAsync("Terminal middleware reached");
+});
 
 app.Run();
