@@ -8,21 +8,17 @@ var app = builder.Build();
 //app.UseMiddleware<Population>();
 //app.UseMiddleware<Capital>();
 
-app.UseRouting();
+//app.UseRouting();
 
-app.UseEndpoints(endpoints =>
+app.MapGet("{first}/{second}/{third}", async context =>
 {
-    endpoints.MapGet("routing", async context =>
+    await context.Response.WriteAsync("Request was routed");
+
+    foreach (var kvp in context.Request.RouteValues)
     {
-        await context.Response.WriteAsync("Request was routed");
-    });
-    endpoints.MapGet("capital/uk", new Capital().Invoke);
-    endpoints.MapGet("population/paris", new Population().Invoke);
+        await context.Response.WriteAsync($"{kvp.Key}: {kvp.Value} \n");
+    }
 });
 
-app.Run(async (context) =>
-{
-    await context.Response.WriteAsync("Terminal middleware reached");
-});
 
 app.Run();
