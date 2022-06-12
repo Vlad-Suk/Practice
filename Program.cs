@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 
-app.MapGet("{first}/{second}/{third}", async context =>
+app.MapGet("{first:int}/{second:bool}", async context =>
 {
     await context.Response.WriteAsync("Request was routed");
 
@@ -16,7 +16,12 @@ app.MapGet("{first}/{second}/{third}", async context =>
     }
 });
 
-app.MapGet("capital/{country}", Capital.Endpoint);
-app.MapGet("size/{city}", Population.Endpoint).WithMetadata(new RouteNameMetadata("population"));
+app.MapGet("capital/{country=france}", Capital.Endpoint);
+app.MapGet("size/{city?}", Population.Endpoint).WithMetadata(new RouteNameMetadata("population"));
+
+app.MapFallback(async context =>
+{
+    await context.Response.WriteAsync("Routed to fallback endpoint");
+});
 
 app.Run();
