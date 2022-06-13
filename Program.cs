@@ -10,21 +10,17 @@ builder.Services.Configure<RouteOptions>(opts =>
 
 var app = builder.Build();
 
-app.MapGet("capital/{country:countryName}", Capital.Endpoint);
-
-
-app.MapGet("{first:int}/{second:bool}", async context =>
+app.MapGet("{numder:int}", async context =>
 {
-    await context.Response.WriteAsync("Request was routed");
+    await context.Response.WriteAsync($"Routed with int restriction with number --- " +
+        $"{context.Request.RouteValues.Values.First()}");
+}).Add(b => ((RouteEndpointBuilder)b).Order = 1);
 
-    foreach (var kvp in context.Request.RouteValues)
-    {
-        await context.Response.WriteAsync($"{kvp.Key}: {kvp.Value} \n");
-    }
-});
-
-app.MapGet("capital/{country=france}", Capital.Endpoint);
-app.MapGet("size/{city?}", Population.Endpoint).WithMetadata(new RouteNameMetadata("population"));
+app.MapGet("{number:double}", async context =>
+{
+    await context.Response.WriteAsync($"Routed with double restriction with number - " +
+        $"{context.Request.RouteValues.Values.Last()}");
+}).Add(b => ((RouteEndpointBuilder)b).Order = 2);
 
 app.MapFallback(async context =>
 {
